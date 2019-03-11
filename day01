@@ -13,7 +13,7 @@ pycharm工具
   python编写工具
   ctrl+/ 注释
   ctrl+z 回退
-  ctrl+l 查询
+  ctrl+l ctrl+f 查询
   
 git版本控制软件
   a)安装git
@@ -59,6 +59,7 @@ git应用
       #
       #	hosts
       提交为空，但是存在尚未跟踪的文件（使用 "git add" 建立跟踪）
+  
   ! [root@end devops]# git add .   //git add <file>... 加载单个文件
     [root@end devops]# git status
       # 位于分支 master
@@ -70,6 +71,7 @@ git应用
       #
       #	新文件：    hosts
       #
+  
   ! [root@end devops]# git commit              //提交版本库 在跳出的vim中 写入日志
     [master（根提交） 94032c6] test 请为您的变更输入提交说明。以 '#' 开始的行将被忽略，而一个空的提交
      1 file changed, 10 insertions(+)
@@ -78,11 +80,13 @@ git应用
     # 位于分支 master
     无文件要提交，干净的工作区
     [root@localhost	devops]#	git	commit	-m	"初始化仓库"   //可以跳过vim交互界面 直接写入
+  
   ! [root@end devops]# git log
       commit 94032c6a4232e8c606619ff3efe039cc90ae8b4c
       Author: Mr.Zzhang <zhangzg@tedu.cn>
       Date:   Mon Mar 11 11:36:09 2019 +0800
       test 请为您的变更输入提交说明。以 '#' 开始的行将被忽略，而一个空的提交
+  
   ! [root@end devops]# git ls-files
       hosts
       passwd
@@ -90,10 +94,99 @@ git应用
     [root@localhost	devops]#	git	commit	-m	'删除welcome.py'	
       
   d)分支管理
-    编写程序人员在master分支上工作,修改bug的程序员新建一个分支,修改完成把他合并到master上即可
+      编写程序人员在master分支上工作,修改bug的程序员新建一个分支,修改完成把他合并到master上即可
     [root@end devops]# git branch b1   //创建分支
     [root@end devops]# git branch      //查看分支
           b1
         * master                        //当前分支有*
     
+    切换分支
+    [root@end devops]# git checkout b1
+      切换到分支 'b1'
+    操作
+    [root@end devops]# echo haha > a.txt
+    [root@end devops]# git add .
+    [root@end devops]# git commit -m 'create a.txt'
+    [b1 5a9b030] create a.txt
+     1 file changed, 1 insertion(+)
+     create mode 100644 a.txt
+
+    合并分支到主干
+    [root@end devops]# git checkout master
+    切换到分支 'master'
+    [root@end devops]# git merge b1
+    更新 bd226a4..5a9b030
+    Fast-forward
+     a.txt | 1 +
+     1 file changed, 1 insertion(+)
+     create mode 100644 a.txt
+     
+    删除分支
+    [root@end devops]# git branch -d b1
+    已删除分支 b1（曾为 5a9b030）。
+    [root@end devops]# git branch
+    * master
+
+  e)切换版本      //建议切换分支后 回跳版本
+    [root@end devops]# git log
+    [root@end devops]# git checkout bd226a49723300912c6ea5109273ba19df3f6293  //log 下commit hash算法生成的id号
     
+gitlab服务器
+  docker镜像安装gitlab
+  [root@gitlab ~]# docker load < gitlab_zh.tar
+  [root@gitlab ~]# docker images
+    REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+    gitlab_zh           latest              1f71f185271a        12 months ago       1.63 GB
+  
+  更改端口
+  [root@gitlab ~]# vim /etc/ssh/sshd_config 
+    port 2222
+  [root@gitlab ~]# systemctl restart sshd
+  [root@gitlab ~]# ss -natulp | grep 2222
+  
+  重新登陆
+  [root@end ~]# ssh -p2222 192.168.4.1
+  
+  启动容器
+  [root@gitlab ~]#docker run -d -h gitlab --name gitlab -p  443:443 -p 22:22 -p 80:80 --restart always \
+  > -v /srv/gitlab/config:/etc/gitlab -v /srv/gitlab/logs:/var/log/gitlab  \ 
+  > -v /srv/gitlab/data:/var/opt/gitlab gitlab_zh:latest
+  [root@gitlab ~]#docker ps     //状态healthy才能正常使用 
+  
+  浏览器访问IP,创建密码 用户名是root
+  
+gitlab概念
+  群组:每个部门,团队创建一个group
+  成员:每个成员对应一个用户,可以添加到组
+  项目:一个group可以开发很多软件项目,一个软件项目对应gitlab一个项目
+  
+  使用gitlab
+  通过ssh密钥免密登陆
+  将/root/.ssh/id_rsa.pub 信息粘贴上传
+  
+  Git 全局设置
+  git config --global user.name "wangj"
+  git config --global user.email "wj@qq.com"
+  
+  创建新版本库
+  git clone git@gitlab:devops/devops-2.git
+  cd devops-2
+  touch README.md
+  git add README.md
+  git commit -m "add README"
+  git push -u origin master
+  
+  已存在的文件夹
+  cd existing_folder
+  git init
+  git remote add origin git@gitlab:devops/devops-2.git
+  git add .
+  git commit -m "Initial commit"
+  git push -u origin master
+  
+  已存在的 Git 版本库
+  cd existing_repo
+  git remote rename origin old-origin
+  git remote add origin git@gitlab:devops/devops-2.git
+  git push -u origin --all
+  git push -u origin --tags
