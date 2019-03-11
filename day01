@@ -169,7 +169,7 @@ gitlab概念
   git config --global user.email "wj@qq.com"
   
   创建新版本库
-  git clone git@gitlab:devops/devops-2.git
+  git clone git@192.168.4.1:devops/devops-2.git
   cd devops-2
   touch README.md
   git add README.md
@@ -179,7 +179,7 @@ gitlab概念
   已存在的文件夹
   cd existing_folder
   git init
-  git remote add origin git@gitlab:devops/devops-2.git
+  git remote add origin git@192.168.4.1:devops/devops-2.git
   git add .
   git commit -m "Initial commit"
   git push -u origin master
@@ -187,6 +187,6 @@ gitlab概念
   已存在的 Git 版本库
   cd existing_repo
   git remote rename origin old-origin
-  git remote add origin git@gitlab:devops/devops-2.git
+  git remote add origin git@192.168.4.1:devops/devops-2.git
   git push -u origin --all
   git push -u origin --tags
