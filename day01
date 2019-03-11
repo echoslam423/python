@@ -1,0 +1,99 @@
+python3 
+官方站点
+  -www.python.org
+  
+安装python3  
+  # yum install -y sqlite-devel tk-devel tcl-devel readline-devel zlib-devel gcc gcc-c++ openssl-devel libffi-devel
+  # tar xzf Python-3.6.7.tgz
+  # cd Python-3.6.7
+  # ./configure --prefix=/usr/local/
+  # make && make install
+  
+pycharm工具
+  python编写工具
+  ctrl+/ 注释
+  ctrl+z 回退
+  ctrl+l 查询
+  
+git版本控制软件
+  a)安装git
+    [root@end ~]# yum -y install git
+  
+  b)基础配置
+    配置用户信息
+    [root@end ~]# git config --global user.name "xxx"
+    [root@end ~]# git config --global user.email "xxx"
+    配置写日志使用的文本编辑器
+    [root@end ~]# git config --global core.editor vim
+    [root@end ~]# git config --global push.default simple
+    查看用户信息
+    [root@end ~]# git config --list
+    
+  c)改配置信息
+    cat ~/.gitconfig
+    
+git应用
+  a)git工作区
+  工作区:编写程序的文件夹目录
+  暂存区:保存工作区文件到版本库之间的缓冲区
+  版本库:保存各次提交的代码 在工作区中一个.git的目录(隐藏文件) 版本库
+  
+  b)创建git工作区
+    1)全新创建
+    [root@end ~]# git init /opt/devops/
+    初始化空的 Git 版本库于 /opt/devops/.git/
+    
+    2)已存在目录
+    [root@end ~]# git init .
+    #ls -A 可以查看版本库 .git
+    
+  c)在工作目录下操作
+    [root@end devops]# cp /etc/hosts .
+  ! [root@end devops]# git status 
+      # 位于分支 master
+      #
+      # 初始提交
+      #
+      # 未跟踪的文件:
+      #   （使用 "git add <file>..." 以包含要提交的内容）
+      #
+      #	hosts
+      提交为空，但是存在尚未跟踪的文件（使用 "git add" 建立跟踪）
+  ! [root@end devops]# git add .   //git add <file>... 加载单个文件
+    [root@end devops]# git status
+      # 位于分支 master
+      #
+      # 初始提交
+      #
+      # 要提交的变更：
+  !   #   （使用 "git rm --cached <file>..." 撤出暂存区）
+      #
+      #	新文件：    hosts
+      #
+  ! [root@end devops]# git commit              //提交版本库 在跳出的vim中 写入日志
+    [master（根提交） 94032c6] test 请为您的变更输入提交说明。以 '#' 开始的行将被忽略，而一个空的提交
+     1 file changed, 10 insertions(+)
+     create mode 100644 hosts
+    [root@end devops]# git status
+    # 位于分支 master
+    无文件要提交，干净的工作区
+    [root@localhost	devops]#	git	commit	-m	"初始化仓库"   //可以跳过vim交互界面 直接写入
+  ! [root@end devops]# git log
+      commit 94032c6a4232e8c606619ff3efe039cc90ae8b4c
+      Author: Mr.Zzhang <zhangzg@tedu.cn>
+      Date:   Mon Mar 11 11:36:09 2019 +0800
+      test 请为您的变更输入提交说明。以 '#' 开始的行将被忽略，而一个空的提交
+  ! [root@end devops]# git ls-files
+      hosts
+      passwd
+  ! [root@localhost	devops]#	git	rm	welcome.py	
+    [root@localhost	devops]#	git	commit	-m	'删除welcome.py'	
+      
+  d)分支管理
+    编写程序人员在master分支上工作,修改bug的程序员新建一个分支,修改完成把他合并到master上即可
+    [root@end devops]# git branch b1   //创建分支
+    [root@end devops]# git branch      //查看分支
+          b1
+        * master                        //当前分支有*
+    
+    
