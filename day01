@@ -12,6 +12,10 @@ python3
 pycharm工具
   python编写工具
   ctrl+/ 注释
+  ctrl+enter 
+  Shift+enter
+  ctrl+w 选中前一个编辑
+  ctrl+x 删除行
   ctrl+z 回退
   ctrl+l ctrl+f 查询
   
@@ -190,3 +194,5 @@ gitlab概念
   git remote add origin git@192.168.4.1:devops/devops-2.git
   git push -u origin --all
   git push -u origin --tags
+
+[root@end py1810]# eval $(ssh-agent)
