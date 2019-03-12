@@ -105,9 +105,162 @@ python的数据类型
   
 2,更新   // 内存的存储类型
   不可变:字符串 数字 元组
+  >>> id() 查看变量指向内存地址
   
 3,访问
   直接:数字
   顺序:字符串,列表,元组
   映射:字典
   
+判断语句
+  表达式非0值,非空 条件为真即为true
+  >>> if ' ': print('yes')   空格字符串非空 输出
+  >>> if [False]: print('yes') 非空列表 输出
+  >>> if 'b' in 'abc' : print('yes') 为真 输出
+  >>> if 3 > 10 :
+      ...     print ('yes')
+      ... else:
+      ...     print ('no')
+      ... 
+      no
+  IndentationError: unexpected indent      // 缩进错误
+  
+  import getpass        //导入模块
+  user_name=input('username')
+  password=getpass.getpass('password')   //调用模块功能
+  if user_name=='bob' and password=='123456':      //判断 ==  字符串用''
+      print('Login successful')
+  else:
+      print('Login inorect')
+  
+  猜数字
+  import random
+num=random.randint(1,10)
+while 1:
+    result = int(input('guess a number:'))
+    if result > num:
+        print('big')
+    elif result < num:
+        print('small')
+    else:
+        print('ok')
+        print('number is:',num)
+        exit()                  //break
+        
+  三元表达式
+    >>> a = 10
+    >>> b = 20
+    >>> if a <= b:
+    ...     smaller=a
+    ... else:
+    ...     smaller=b
+    ...
+    可以直接写为
+    >>> smaller=a if a<=b else b 
+    
+  1-100求和
+    
+    result = 0
+    counter = 1
+    while counter <= 100:
+        result += counter
+        counter += 1
+    print(result)
+    
+   成绩
+   score =int(input('输入成绩'))
+      if score >= 90:
+          print('优秀')
+      elif score >= 80:
+          print('好')
+      elif score >= 70:
+          print('中')
+      elif score >= 60:
+          print('及格')
+      else:
+          print('不及格')
+    
+    猜拳
+    import random
+    win_list=[['石头','剪刀'],['剪刀','布'],['布','石头']]
+    cpu=random.choice(['石头','剪刀','布'])
+    guess=input('请输入石头,剪刀,布:')
+    print('Your choice: %s, CPU choice: %s' % (guess,cpu))
+    if guess==cpu:
+        print('\033[32;1m平局\033[0m')
+    elif [guess,cpu] in win_list:
+        print('\033[31;1mYou Win!!\033[0m')
+    else:
+        print('\033[31;1mYou LOSE\033[0m')
+        
+   写法二
+    import random
+    all_chs =['石头','剪刀','布']
+    win_list=[['石头','剪刀'],['剪刀','布'],['布','石头']]
+    cpu=random.choice(all_chs)
+    prompt='''(0)石头
+    (1)剪刀
+    (2)布
+    请输入0/1/2:'''
+    ind=int(input(prompt))
+    guess=all_chs[ind]
+    print('Your choice: %s, CPU choice: %s' % (guess,cpu))
+    if guess==cpu:
+        print('\033[32;1m平局\033[0m')
+    elif [guess,cpu] in win_list:
+        print('\033[31;1mYou Win!!\033[0m')
+    else:
+        print('\033[31;1mYou LOSE\033[0m')
+    
+    三局俩胜
+    import random
+    you_win=0
+    you_lose=0
+    all_chs =['石头','剪刀','布']
+    win_list=[['石头','剪刀'],['剪刀','布'],['布','石头']]
+    prompt = '''(0)石头
+        (1)剪刀
+        (2)布
+        请输入0/1/2:'''
+    while you_win < 2 and you_lose < 2 :
+        cpu=random.choice(all_chs)
+        ind=int(input(prompt))
+        guess=all_chs[ind]
+        print('Your choice: %s, CPU choice: %s' % (guess,cpu))
+        if guess==cpu:
+            print('\033[32;1m平局\033[0m')
+        elif [guess,cpu] in win_list:
+            print('\033[31;1mYou Win!!\033[0m')
+            you_win += 1
+            print('人胜 %s 电脑胜 %s' % (you_win,you_lose))
+        else:
+            print('\033[31;1mYou LOSE\033[0m')
+            you_lose += 1
+            print('人胜 %s 电脑胜 %s' % (you_win, you_lose))
+            
+     continue
+        result = 0
+        counter = 0
+        while counter < 100:
+            counter += 1
+            if counter % 2:
+                continue
+            result += counter
+        print(result)
+  
+  
+import random
+num=random.randint(1,10)
+counter=0
+while counter < 4 :
+    result = int(input('guess a number:'))
+    if result > num:
+        print('big')
+    elif result < num:
+        print('small')
+    else:
+        print('ok')        
+        break
+    counter += 1                
+else:                            #循环的else语句,如果循环被break中断,else不执行,否则执行
+    print('number is:', num)
