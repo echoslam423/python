@@ -72,4 +72,37 @@ python的数据类型
   py_str + str(100)    //py_str + '100'
   '*' * 50     重赋50遍 *
   
+列表
+  相当于一个数组,可以将各种对象存入其中
+  alist = ['tom','jerry',10,20,[1,2,3]]
+  len(alist)
+  alist[2:4]
+  alist.(tabx2)   显示属性方法
+  alist.append(200)
+  alist.insert()                    //yiyibooks.cn  -> python 352 文档 >> 文档库
+  alist[-1]=100 最后一项重新赋值
+  alist + [5]
+  alist * 3
+  
+元组
+  可当作不可改变的列表
+  atuple = (1,2,3,4)
+  可以切片,取字符,拼接,索引下标
+  不可更改
+
+字典
+  key-value对格式的数据
+  adict = {'name':'tome','age':20}
+  20 in adict          //返回false 判断key
+  adict['age']             //字典没有顺序,只有键值对 通过key找value
+  adict['age'] = 22           //更新value
+  adict['email'] = 'tom@qq.com'     //添加新值
+  
+数据类型分类
+1,存储
+  标量:数字,字符串
+  容器:字典,元组,列表
+  
+2,更新   // 内存的存储类型
+  不可变:字符串 数字 元组
   
