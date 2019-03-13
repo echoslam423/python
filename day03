@@ -239,3 +239,11 @@ range函数
     # 
     # nums=int((input('请输入密码位数:')))
     # print(createPass(nums))
+
+导入模块的三种方法
+>>>	import	sys	
+>>>	import	os,	string	
+>>>	string.digits	
+'0123456789'	
+>>>	from	random	import	randint	
+>>>	randint(1,	10)	
