@@ -50,6 +50,10 @@ range函数
     #     print()                   #一行内打印3个hello再回车
     #
     
+    for i in range(1,10):           
+    for j in range(1,i+1):        
+        print('%s*%s=%-2s'%(i,j,i*j),end=' ')   
+    print()
     
  列表解析
     print([5+5 for i in range(10)])                       [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
@@ -60,7 +64,15 @@ range函数
  文件操作
     1,操作步骤
      打开文件,读写,关闭
-     file_object	=	open(file_name,	access_mode='r',buffering=-1)	
+     file_object	=	open(file_name,	access_mode='r',buffering=-1)   //r w a r+ w+ a+ b
+        r读方式打开   
+        w写方式打开  文件存在则清空,不存在则创建
+        a追加方式打开 
+        r+ 读写
+        w+ 读写  文件存在则清空
+        a+
+        b 二进制
+        
       #cp /etc/passwd /tmp/     
         f = open('/tmp/passwd')         #默认以r的方式打开
         data = f.read()            #默认读取全部内容,文件指针将会移动到文件结尾
@@ -73,3 +85,24 @@ range函数
         print(f.readline())             #遇到\n结束
         print(f.readlines())           #读取所有行,每行成为一个字符串,放到列表里
         print(f.close())
+
+     常用的读文本文件的方法
+        f = open('/tmp/passwd')           常用的读文本文件的方法
+        for i in f:
+            print(line,end='')
+        f.close()
+        
+     读取非文本文件   
+        #cp /bin/ls /tmp/list
+        f = open('/tmp/list',mode='rb')
+        print(f.read(4))
+        f.close()
+             
+     写入操作  
+       f=open('/tmp/passwd','w')
+        f.write('hello world!\n')   #写入缓存，缓存达到4k才写入硬盘
+        f.flush()                 #立即写入硬盘操作，不用执行
+        f.writelines(['2 line.\n','3 line.','new line.\n'])   #换行只识别\n
+        f.close()                   #关闭也会执行缓存写入硬盘   
+        
+        
