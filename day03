@@ -1,14 +1,75 @@
 for循环
-astr = 'hello'
-alist = [10,20,30]
-atuple = ('kenji','chihiro')
-adict = {'name': 'natasha','age': 18}
+    astr = 'hello'
+    alist = [10,20,30]
+    atuple = ('kenji','chihiro')
+    adict = {'name': 'natasha','age': 18}
 
-for ch in astr:
-    print(ch)
-for i in alist:
-    print(i)
-for name in atuple:
-    print(name)
-for key in adict:
-    print('%s: %s' % (key,adict[key]))
+    for ch in astr:
+        print(ch)
+    for i in alist:
+        print(i)
+    for name in atuple:
+        print(name)
+    for key in adict:
+        print('%s: %s' % (key,adict[key]))
+
+range函数
+    用于产生一些列整数
+    默认从0开始取值 只给一个参数默认是结束数字
+    返回的是一个range对象,取值会立即生成一个值,不取值不生成所以不占内存
+    结束数字不包含
+    list(range(10))
+    range(1,11,2)
+    range(10,0,-1) 
+    
+    print(list(range(10)))          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    print(list(range(6,11)))        [6, 7, 8, 9, 10]
+    print((range(1,11,2)))          range(1, 11, 2)
+    print(list(range(10,0,-1)))     [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+    
+ 取列表的下标及值
+    alist = [10,20,30]
+    print(len(alist))         #显示长度
+    for i in range(len(alist)):
+        print('%s: %s' % (i,alist[i]))
+    
+ 斐波那契数列
+    alist= [0,1]
+    for i in range(8):
+       alist.append(alist[-1] +alist[-2])
+    print(alist)
+
+ 乘法口诀表
+
+    # for i in range(3):
+    #     print('hello')
+
+    # for i in range(3):            #控制打印行
+    #     for j in range(3):        #控制行内打印多少次
+    #         print('hello', end=' ')   #print默认打印回车 需要用end把回车
+    #     print()                   #一行内打印3个hello再回车
+    #
+    
+    
+ 列表解析
+    print([5+5 for i in range(10)])                       [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+    print([5+i for i in range(10)])                       [5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    print([5+i for i in range(1,11) if i % 2 == 0])       [7, 9, 11, 13, 15]
+    print(['192.168.1.%s' % i for i in range(1,255)]) 
+
+ 文件操作
+    1,操作步骤
+     打开文件,读写,关闭
+     file_object	=	open(file_name,	access_mode='r',buffering=-1)	
+      #cp /etc/passwd /tmp/     
+        f = open('/tmp/passwd')         #默认以r的方式打开
+        data = f.read()            #默认读取全部内容,文件指针将会移动到文件结尾
+        print(data)                       #文件中所有内容保存成一个字符串
+        data = f.read()            #继续读文件,因为文件指针移动到了结尾,没有任何数据
+        print(data)                       #空串
+
+       f=open('/tmp/passwd')
+        print(f.read(4))                   #实际建议4096
+        print(f.readline())             #遇到\n结束
+        print(f.readlines())           #读取所有行,每行成为一个字符串,放到列表里
+        print(f.close())
