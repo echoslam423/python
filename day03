@@ -100,9 +100,142 @@ range函数
              
      写入操作  
        f=open('/tmp/passwd','w')
-        f.write('hello world!\n')   #写入缓存，缓存达到4k才写入硬盘
-        f.flush()                 #立即写入硬盘操作，不用执行
-        f.writelines(['2 line.\n','3 line.','new line.\n'])   #换行只识别\n
-        f.close()                   #关闭也会执行缓存写入硬盘   
+       f.write('hello world!\n')   #写入缓存，缓存达到4k才写入硬盘
+       f.flush()                 #立即写入硬盘操作，不用执行
+       f.writelines(['2 line.\n','3 line.','new line.\n'])   #换行只识别\n
+       f.close()                   #关闭也会执行缓存写入硬盘   
         
+       f = open('/tmp/mytest','bw')
+       # f.write(b'helloworld!\n')   #1个在英文对应一个字节 1个中文对应3个字节,不能b写入
+       data = '人'
+       f.write(data.encode())            #默认utf8 将人转换成utf8编码对应的2进制数
+       # data.encode('gb2312')
+       f.close()
         
+       f=open('/tmp/test','bw')   //英文用b 中文.encode
+       data='哈哈哈哈\n'
+       f.write(data.encode())
+       f.close()
+        
+       with open('/tmp/passwd') as f:
+           print(f.readline())
+       #f.readline()         #报错,因为文件已经关闭了
+        
+     移动文件指针
+       f=open('/tmp/passwd','rb')
+       f.tell()               #显示当前指针位置
+       f.readline()
+       f.tell()
+       f.seek(0,0)            #移动指针到文件开头,第二个数字0表示开头 1表示当前位置 2表示结尾
+       指针从开头向后偏移0字节                        #第一个数字是偏移量position
+       f.seed(-6,2) 从结尾向前偏移6个字节 包括\n                 
+    
+    用python拷贝/bin/ls 到/root/下 
+        f1=open('/bin/ls','rb')
+        f2=open('/root/ls','wb')
+        text=f1.read()
+        f2.write(text)
+        f1.close()
+        f2.close()
+       
+     优化版本  
+        src_fname='/bin/touch'
+        dst_fname='/root/touch'
+        src_fobj=open(src_fname,'rb')
+        dst_fobj=open(dst_fname,'wb')
+        while 1:
+            data=src_fobj.read(4096)
+            if  data == b'':
+            #if len(data) == 0:
+            #if not data:
+                break
+            else:
+                dst_fobj.write(data)
+        src_fobj.close()
+        dst_fobj.close()
+    
+    函数调用版本
+        import sys
+        def copy(src_fname,dst_fname):
+            src_fobj=open(src_fname,'rb')
+            dst_fobj=open(dst_fname,'wb')
+            while 1:
+                data=src_fobj.read(4096)
+                if  data == b'':
+                #if len(data) == 0:
+                #if not data:
+                    break
+                else:
+                    dst_fobj.write(data)
+            src_fobj.close()
+            dst_fobj.close()
+
+        copy(sys.argv[1],sys.argv[2])
+
+    
+    函数的定义及调用
+        def pstar():                         #定义函数
+            print('*' * 30)
+            print('+' * 30)
+
+        pstar()                           #调用函数
+        
+    #函数必须使用明确的return进行值的返回，没有return,默认返回none
+    def gen_fib():
+        fib=[0,1]
+        num = int(input('输入列表长度'))
+        for i in range(num-2):
+            fib.append(fib[-1]+fib[-2])
+        return fib
+    nums=gen_fib()
+    nums2=[i * 2 for i in nums]
+    print(nums2)    
+    
+    修改以上语句完成传参
+    def gen_fib(num=10):                             # 设置默认值
+        fib=[0,1]
+    #    num = int(input('输入列表长度'))
+        for i in range(num-2):
+            fib.append(fib[-1]+fib[-2])
+        return fib
+    # nums=gen_fib()
+    # nums2=[i * 2 for i in nums]
+    # print(nums2)
+    nlist=[5,8,10]
+    for n in nlist:
+        result=gen_fib(n)
+        print(result)
+        
+    l=int(input('输入数列长度 :'))    参数传递的方式多而且灵活
+    print(gen_fib(l))
+    
+    位置参数
+    import sys
+
+    print(sys.argv)      #argv是sys模块中的列表
+    [root@one day03]# python3 day03.py 1
+    ['day03.py', '1']
+   
+模块
+   一个python文件就是一个模块
+•  模块具有一个__name__特殊属性
+•  当模块文件直接执行时,__name__的值为'__main__'
+•  当模块被另一个文件导入时,__name__的值就是该模块的名字
+用import语句 加载模块
+导入模块 模块代码会被执行一遍
+模块用 模块.属性 的方法来使用模块内的函数或变量
+    if __name__=='__main__':               # pycharm  mai+tab 可以补全
+        print()
+        
+随机生成密码
+    # import random
+    # def createPass(num=8):
+    #     word='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%^&*()'
+    #     password=''
+    #     for i in range(num):
+    #         key=random.choice(word)
+    #         password=password+key
+    #     return password
+    # 
+    # nums=int((input('请输入密码位数:')))
+    # print(createPass(nums))
