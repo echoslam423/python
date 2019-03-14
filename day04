@@ -1,0 +1,220 @@
+python生成随机密码
+from random import choice
+from string import ascii_letters,digits,punctuation
+
+all_chs = ascii_letters+digits+punctuation
+
+def randpass(n=8):
+    result=''
+
+    for i in range(n):
+        ch = choice(all_chs)
+        result += ch
+    return result
+
+if __name__ == '__main__':
+    print(randpass())
+    print(randpass(10))
+    
+shell工具模块
+  shutil
+# import shutil
+# shutil.copy('/etc/passwd','/tmp/bytes')      #cp
+# shutil.copy2()                             #cp -p
+# shutil.copytree()                          #cp -r
+# shutil.move()                              #mv
+# shutil.rmtree()                            #删除目录
+
+os.remove  删除文件
+
+x=y=10                           链式赋值
+a,b=10,20                        
+a,b=(10,20)
+a,b=[10,20]
+a,b=b,a                          a,b值互换
+
+keyword模块
+import keyword
+keyword.iskeyword('pass')
+'pass' in keyword.kwlist
+#内键 不是关键字 也不要使用 len
+del #清除自定义变量
+
+代码文件布局
+#!/usr/bin/env	python														#起始行
+“this	is	a	test	module”															#模块文档字符串
+import	sys																																				#导入模块
+import	os	
+debug	=	True																																#全局变量声明
+class	FooClass(object):															#类定义
+'Foo	class'	
+				pass	
+def	test():																																							#函数定义
+"test	funcDon"	
+				foo	=	FooClass()	
+if	__name__	==	‘__main__’:							#程序主体
+test()	
+
+
+# 思考程序是否是交互的
+# 分析函数功能,将每个功能编写成函数 再从主程序部分定义函数什么时候调用
+# 编写
+
+import os
+
+
+def get_fname():
+    while 1:
+        fname = input('filename:')
+        if not os.path.exists(fname):  # [! -e fname]
+            break
+        print('文件已存在')
+
+    return fname
+
+
+def get_content():
+    content = []
+
+    print('请输入内容,quit结束')
+    while 1:
+        data = input('> ')
+        if data == 'quit':
+            break
+        content.append(data)
+
+    return content
+
+def wfile(fname, content):
+    with open(fname, 'w') as fobj:
+        fobj.writelines(content)
+
+
+if __name__ == '__main__':
+    fname = get_fname()  # 获取文件名
+    content = get_content()  # 获取文件内容
+    content = [line + '\n' for line in content]
+    wfile(fname, content)  # 将内容写入文件
+
+
+检测字符是否是关键字
+定义是否合法
+
+import sys
+import string
+import keyword
+
+first_chs = string.ascii_letters + '_'
+other_chs = first_chs + string.digits
+
+
+def check_idt(idt):
+    if keyword.iskeyword(idt):
+        return '%s是关键字' % idt
+
+    if idt[0] not in first_chs:
+        return '第一个字符不合法'
+
+    for int, ch in enumerate(idt[1:]):
+        if ch not in other_chs:
+            return '第%s个字符不合法' % (int + 2)
+
+    return '%s是合法的' % idt
+
+
+if __name__ == '__main__':
+    print(check_idt(sys.argv[1]))
+
+占位符 
+print('%s is %d years old' % ('bob',22))     # %s使用str转换成字符 %d使用int转换成整数
+print('%10s%8s' % ('name','age'))          #10s表示字段宽度为10 右对齐
+print('%-10s%-8s' % ('name','age'))         #-10代表左对齐
+print('%s is %f years old' % ('bob',20))    #%f ->float浮点型
+print('cost %5.2f' % (10.8))         #5代表总宽度,2代表小数位
+print('97 is %c'% 97)              #将ASCII码97转换成相应的字符
+print('10 is %#o' % 10)           # %#o 8进制  %#x 16进制
+print('%010d' % 25)              # 0占位 默认空格
+
+format也能实现占位
+print('{1} is {0} years old'.format(20,'bob'))
+print('{0[1]:10} is {0[0]:>8} years old'.format([20,'bob']))
+
+使用shell
+import subprocess
+subprocess.run(['ls','-l','/root'])   #非shell环境 ～被认为是文件名
+subprocess.run('ls -l ~', shell=True)  #在shell环境下执行
+result = subprocess.run('ls -l ~',shell=True)
+result.returncode   #相当于shell的$? 执行失败为非0
+
+1.  编写一个程序,实现创建用户的功能
+2.  提示用户输入用户名
+3.  随机生成8位密码
+4.  创建用户并设置密码
+5.  将用户相关信息写入指定文件
+import subprocess
+import password
+import sys
+
+
+def adduser(Uname, Pword, Fname):
+    info = '''user info:
+    username:%s
+    password:%s
+    ''' % (Uname, Pword)
+    subprocess.run('useradd %s' % Uname, shell=True)
+    subprocess.run('echo %s | passwd --stdin %s' % (Pword, Uname), shell=True)
+    with open(Fname, 'a') as fobj:
+        fobj.write(info)
+
+
+if __name__ == '__main__':
+    Uname = sys.argv[1]
+    Pword = password.randpass()
+    Fname = '/tmp/user.txt'
+    adduser(Uname, Pword, Fname)
+
+原始字符
+ wpath = r'c:\temp\newdir'              #r 代表real 表示读取字符串不会转译 组合成其他含义
+ 等同于 wpath = 'c:\\temp\\mewdor'
+ 
+ 
+hi = '        hao\t123         \n'
+hi.strip()                      #删除俩端空白字符
+hi.lstrip()                     #左对齐
+hi.rstrip()                     #右对齐
+hi.center(40,'#')              #字符40位取中
+hi.ljust(40)                   #左对齐
+upper 大写
+lower 小写
+split('.')  分离 以.切割
+.startswith
+.endswith
+'---'.join(alist)     使用---将列表拼接
+.replace('a','b')       替换操作
+
+alist = [0,1]
+alist.count(0)             #统计0的出现次数
+alist.pop()                 #从末尾弹出最后一个元素,可以指定index值
+alist.extend([3,4,5,2,1])   #将列表元素分成单项加入
+alist.sort()               # 升序排列
+alist.reverse()          #翻转
+blist=alist.copy()            #将alist值赋于blist
+alist.remove(5)               #删除第一个出现的元素
+alist.index(5)                #查看5的索引值
+
+虽然元组本身是不可变的,但是因为它同时属于容器
+类型,也就意味着元组的某一个元素是可变的容器类
+型,那么这个元素中的项目仍然可变
+a=(10)             数字
+a=(10,)             元组
+        type(a)
+>>>	atuple	=	('bob',	['boy',	23])	
+>>>	atuple[-1]	=	['boy',	22]	
+Traceback	(most	recent	call	last):	
+		File	"<stdin>",	line	1,	in	<module>	
+TypeError:	'tuple'	object	does	not	support	item	assignment	
+>>>	atuple[-1][-1]	=	22	
+>>>	atuple[-1].append(175)	
+>>>	atuple	
+('bob',	['boy',	22,	175])	
+ 
