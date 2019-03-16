@@ -73,6 +73,7 @@ adict.update(bdict) 更新合并字典
 
 字典实现 用户登录 注册的菜单
 
+
 import getpass
 
 adict = {}
@@ -82,9 +83,9 @@ def login():
     username = input('请输入登录名:').strip()
     password = getpass.getpass('输入密码:')
     if adict.get(username) == password:
-        print('登录成功:')
+        print('\033[31;1m登录成功\033[0m')
     else:
-        print('非法用户')
+        print('\033[31;1m非法用户\033[0m')
 
 
 def sign():
@@ -93,7 +94,7 @@ def sign():
         password = input('输入密码:')
         adict[username] = password
     else:
-        print('%s 已存在' % username)
+        print('\033[31;1m%s已存在\033[0m' % username)
 
 
 def menu():
@@ -105,7 +106,7 @@ def menu():
     while 1:
         choice = input(prompt).strip()
         if choice not in ['0', '1', '2']:
-            print('无效的输入')
+            print('\033[31;1m无效的输入\033[0m')
             continue
         if choice == 2:
             break
