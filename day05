@@ -1,0 +1,37 @@
+Stack = []
+
+
+def inStack():
+    ln = (input('输入压栈元素：'))
+    Stack.append(ln)
+
+
+def popStack():
+    popln = Stack.pop()
+    print('出栈的元素为: %s' % popln)
+
+
+def viewStack():
+    print(Stack)
+
+
+def showmenu():
+    cmds = {'0': inStack, '1': popStack, '2': viewStack}
+    prompt = '''(0)压栈
+(1)出栈
+(2)查询
+(3)退出
+输入选择(0/1/2/3):'''
+    while 1:
+        choice = input(prompt).strip()
+        if choice not in ['0', '1', '2', '3']:
+            print('无效的输入')
+            continue
+
+        if choice == '3':
+            break
+        cmds[choice]()  # 字典下标 标示key 取值 后面()代表调用函数
+
+
+if __name__ == '__main__':
+    showmenu()
