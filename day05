@@ -115,3 +115,154 @@ def menu():
 
 if __name__ == '__main__':
     menu()
+
+linx格式转换windos格式
+ 
+import sys
+
+def unix2dos(fname):
+    win_fname=fname+'.txt'     #新文件名在源有基础上加.txt
+    with open(fname,'rb') as src_fobj:
+        with open(win_fname,'wb') as dst_fobj:
+            for line in src_fobj:
+                line=line.rstrip() + b'\r\n'  #将一行最右端的空格清除,拼接\r\n,再赋值回给line
+                dst_fobj.write(line)
+                
+if __name__ == '__main__':
+    unix2dos(sys.argv[1])
+
+图行load条
+
+import time
+
+n = 0
+print('#' * 20, end='')
+
+while True:
+    time.sleep(0.2)
+    print('\r%s@%s' % ('#' * n, '#' * (19 - n)), end='')
+    n += 1
+    if n == 20:
+        n = 0
+
+集合                        集合自然去重, 
+aset = set('abc')
+bset = set('bcd')
+cset = set(['hello','world'])
+len(aset)
+for ch in aset:
+    print(ch)
+aset | bset     #并集
+aset & bset     #交集
+aset - bset     #差补
+
+#将列表中重复的数字去除
+from random import randint
+alist=[randint(1,50) for i in range(20)]
+list(set(alist))
+
+筛选文件
+with open('/etc/passwd') as fobj:
+    aset = set(fobj)  # 文件每一行成为了集合的元素
+with open('/tmp/passwd') as fobj:
+    bset = set(fobj)
+bset - aset  # 取差补
+with open('/tmp/result.txt', 'w') as fobj:
+    fobj.writelines(bset - aset)
+
+集合的方法
+aset = set('abc')
+bset = set('abcd')
+aset.union(bset)    #并集
+aset.intersection(bset) #交集
+aset.difference(bset)  #差补
+aset.issuperset(bset)  #a是b的超集
+bset.issubset(aset)    #b是a的子集
+aset.add(10)        #添加
+aset.update([10,20,30])  #添加
+aset.remove(10)         #删除
+aset.pop()              #随机弹出
+
+#时间戳 从1970年1月1日-至某一时间点的秒数
+import time
+!time.time() #时间戳
+
+#UTC时间：世界协调时 格林威治时区 东8区中国
+time.ctime()
+
+#9元组:一年中的第几天,一周中的第几天，年月日时分秒，夏令时
+time.localtime()
+
+time.localtime([secs]):将一个时间戳转换为当前
+时区的struct_time。secs参数未提供,则以当前时
+间为准
+•  time.gmtime([secs]):和localtime()方法类似,
+gmtime()方法是将一个时间戳转换为UTC时区(0
+时区)的struct_time
+•  time.time():返回当前时间的时间戳
+•  time.mktime(t):将一个struct_time转化为时间戳
+!time.sleep(secs):线程推迟指定的时间运行。单
+位为秒
+•  time.asctime([t]):把一个表示时间的元组或者
+struct_time表示为这种形式:‘Sun Jun 20
+23:21:05 1993’。如果没有参数,将会将
+time.localtime()作为参数传入
+•  time.ctime([secs]):把一个时间戳(按秒计算的浮
+点数)转化为time.asctime()的形式
+!time.strftime(format[, t]):把一个代表时间的元
+组或者struct_time(如由time.localtime()和
+time.gmtime()返回)转化为格式化的时间字符串。
+如果t未指定,将传入time.localtime()
+•  time.strptime(string[, format]):把一个格式化时
+间字符串转化为struct_time。实际上它和
+strftime()是逆操作
+>>>	^me.str_ime('%Y-%m-%d	%X',	^me.local^me())	
+'2017-12-12	12:58:19'
+
+datetime模块方法
+datetime.today():返回一个表示当前本地时间的
+datetime对象
+•  datetime.now([tz]):返回一个表示当前本地时间的
+datetime对象,如果提供了参数tz,则获取tz参数
+所指时区的本地时间
+•  datetime.strptime(date_string, format):将格式
+字符串转换为datetime对象
+•  datetime.ctime(datetime对象):返回时间格式字
+符串
+•  datetime.strftime(format):返回指定格式字符串
+
+使用timedelta可以很方便的在日期上做天days,小
+时hour,分钟,秒,毫秒,微妙的时间计算
+
+>>>	dt	=	datetime.datetime.now()	
+>>>	days	=	datetime.timedelta(days=100,hours=3)	
+>>>	dt	+	days	
+datetime.datetime(2050,	6,	10,	20,	41,	20,	106546)	
+
+异常
+NameError 未声明/初始化对象
+IndexError 序列中没有没有此索引
+SyntaxError 语法错误
+KeyboardInterrupt 用户中断执行
+EOFError 没有内建输入,到达EOF标记
+IOError 输入/输出操作失败
+
+try-except语句
+•  定义了进行异常监控的一段代码,并且提供了处理异常的机制
+try:	
+				try_suite	#监控这里的异常
+except	Excep^on[as	reason]:	
+				except_suite	#异常处理代码
+     
+例子 
+try:
+    num = int(input('number:'))
+    result = 100 / num
+    print(result)
+except (ValueError, ZeroDivisionError):
+    print('无效的输入')
+except(KeyboardInterrupt, EOFError):
+    print('\nbyebye')
+    exit(1)
+
+print('done')
