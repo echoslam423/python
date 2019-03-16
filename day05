@@ -1,13 +1,17 @@
+用列表模仿栈操作
+
 Stack = []
 
 
 def inStack():
-    ln = (input('输入压栈元素：'))
-    Stack.append(ln)
+    ln = (input('输入压栈元素：').strip())
+    if item:
+        Stack.append(ln)
 
 
 def popStack():
-    popln = Stack.pop()
+    if stack:
+        popln = Stack.pop()
     print('出栈的元素为: %s' % popln)
 
 
@@ -35,3 +39,78 @@ def showmenu():
 
 if __name__ == '__main__':
     showmenu()
+    
+    
+字典定义的三种方式:
+adict = {'name':'tom','age':20}
+bdict = dict(['ab',('name','tom'),['name','jerry']])
+cdict = {}.fromkeys(['bob','tom','jerry'],7)
+
+输出字典的方式
+a)for key in adict:
+    print ('%s: %s' % (key,adict[key]))
+
+b)'%(name)s: %(age)s' % adict
+
+添加/修改
+adict[age]=22
+adict[mail]='1@qq.com'
+
+hash 判断字典的key值 是否可用
+字典的key只能是不可变类型
+
+方法 adict.get()   在字典中取得key的值
+adict.get('a','b')  如果取得key为a的值不存在 返回b
+
+adict.keys() 获取所有的key
+adict.values() 取所有的值
+adict.items()  获取key:value
+help(adict.popitem)
+adict.pop('key')
+adict.popitem 随机弹出
+adict.update(bdict) 更新合并字典
+
+
+字典实现 用户登录 注册的菜单
+
+import getpass
+
+adict = {}
+
+
+def login():
+    username = input('请输入登录名:').strip()
+    password = getpass.getpass('输入密码:')
+    if adict.get(username) == password:
+        print('登录成功:')
+    else:
+        print('非法用户')
+
+
+def sign():
+    username = input('输入要注册的用户名:').strip()
+    if username not in adict:
+        password = input('输入密码:')
+        adict[username] = password
+    else:
+        print('%s 已存在' % username)
+
+
+def menu():
+    cmd = {'0': login, '1': sign}
+    prompt = '''(0)登录:
+(1)注册:
+(2)退出:    
+输入选择:'''
+    while 1:
+        choice = input(prompt).strip()
+        if choice not in ['0', '1', '2']:
+            print('无效的输入')
+            continue
+        if choice == 2:
+            break
+        cmd[choice]()
+
+
+if __name__ == '__main__':
+    menu()
