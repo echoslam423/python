@@ -248,7 +248,7 @@ EOFError 没有内建输入,到达EOF标记
 IOError 输入/输出操作失败
 
 try-except语句
-•  定义了进行异常监控的一段代码,并且提供了处理异常的机制
+ 定义了进行异常监控的一段代码,并且提供了处理异常的机制
 try:	
 				try_suite	#监控这里的异常
 except	Excep^on[as	reason]:	
@@ -258,11 +258,63 @@ except	Excep^on[as	reason]:
 try:
     num = int(input('number:'))
     result = 100 / num
-    print(result)
 except (ValueError, ZeroDivisionError):
     print('无效的输入')
 except(KeyboardInterrupt, EOFError):
     print('\nbyebye')
     exit(1)
+else:    #不发生异常执行
+     print(result)
+finally: #不管异常是否发生都执行
+     print('done')
 
-print('done')
+自定义异常的方式
+def set_age(name, age):
+    if not 0 < age < 120:
+        raise ValueError('age out of range')
+    print('%s is %d years old' % (name, age))
+
+
+def set_age2(name, age):
+    assert 0 < age < 120, 'age out of range'
+    print('%s is %d years old' % (name, age))
+
+
+if __name__ == '__main__':
+    set_age('tom', 25)
+    set_age2('tom', 255)
+    
+os模块简介
+•  对文件系统的访问大多通过python的os模块实现
+•  该模块是python访问操作系统功能的主要接口
+•  有些方法,如copy等,并没有提供,可以使用shutil模块作为补充
+
+import os
+os.getcwd()          #pwd
+os.listdir('/etc/')   #ls
+os.makedirs('/tmp/aaa/bbb')   #mkdir -p
+os.chdir()                 #cd
+os.remove()              #rm
+os.rmdir()          # rmdir
+os.symlink()          #ln -s
+os.mknod()           #touch
+os.unlink()          # 删除快捷方式
+os.path.isfile()     #判断 isdir islink 
+os.path.exists()        # [ -e /etc ] 判断存在
+os.path.split()         #路径切割
+os.path.join('/tmp/aaa','/bbb') #路径拼接
+
+pickle模块简介
+•  把数据写入文件时,常规的文件方法只能把字符串对象写入。其他数据需先转换成字符串再写入文件 。
+•  python提供了一个标准的模块,称为pickle。使用它可以在一个文件中储存任何python对象,之后又可以把它完整无缺地取出来
+
+import pickle
+
+with open('/tmp/abc.data', 'wb') as f:
+    shop_list = ['apple', 'banana', 'peach', 'mongo']
+    pickle.dump(shop_list, f)
+
+with open('/tmp/abc.data', 'rb') as f:
+    mylist = pickle.load(f)
+
+print(type(mylist))
