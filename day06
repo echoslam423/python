@@ -325,3 +325,46 @@ if __name__ == '__main__':
     print(qsort(alist))
     
 生成器是一个带yield语句的函数一个函数或者子程序只返回一次,但一个生成器能暂停执行并返回一个中间的结果
+
+每次返回10行内容
+def gen_block(fobj):
+    content = []
+    for line in fobj:
+        content.append(line)
+        if len(content) == 10:
+            yield content             #遇到yield,返回数据,生成器停在此处不继续值行
+            content = []
+    if content:  # 列表非空为真
+        yield content
+
+if __name__ == '__main__':
+    fname='/etc/passwd'
+    fobj=open(fname)
+    mygen=gen_block(fobj)
+    for block in mygen:
+        print(block)
+        print('*' * 30)
+ 
+
+闭包和装饰器
+闭包将内部函数自己的代码和作用域以及外部函数的作用结合起来
+def set_color(func):
+    def red():
+        return '\033[31;1m%s\033[0m' % func()
+
+    return red
+
+def hello():
+    return 'Hello World!'
+装饰器是在函数调用之上的修饰
+@set_color
+def greet():
+    return 'How are you?'
+
+if __name__ == '__main__':
+    a = set_color(hello)
+    print(a())
+    print(greet())
+    # print(set_color(greet)())
+# greet因为有装饰器，所有这里的greet其实是把greet函数作为set_color的参数传进去
+# 返回red，有装饰器的greet相当于是set_color(greet)()
