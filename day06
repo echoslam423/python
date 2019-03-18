@@ -214,3 +214,114 @@ if __name__ == '__main__':
 
 result2 = filter(lambda num: num % 2, alist)
 print(list(result2))
+
+# filter()是函数过滤 返回值1即为True 0是False
+# map() 是函数加工
+
+全局变量：在顶级代码中定义的变量，全局变量一旦定义，在定义开始一直到程序结束，任何
+地方都可见、可用
+>>> x = 10    # 全局变量
+>>> def foo():
+...     print(x)   # 打印全局变量x
+...
+>>> foo()
+10
+局部变量：在函数内部定义，只有函数运行期间可见可用
+>>> def bar():
+...     hi = 'hello world'
+...     print(hi)
+...
+>>> bar()
+hello world
+>>> print(hi)   # NameError，全局不能访问局部变量
+
+如果全局和局部有同名变量，局部变量就把全局变量遮盖住了
+>>> x = 10
+>>> def foo():
+...     x = 100
+...     print(x)
+...
+>>> foo()
+100
+>>> print(x)
+10
+
+如果真的希望在局部使用全局变量，需要在函数内通过global语句进行声明
+>>> x = 10
+>>> def foo():
+...     global x   # 声明此处的x是全局的x
+...     x = 100
+...     print(x)
+...
+>>> print(x)    # 函数定义，不会执行函数内的代码，所以此处的x仍然是10
+10
+>>> foo()    # 调用函数，函数将把全局的x值改掉
+100
+>>> print(x)   # 全局的x值已变为100
+100
+
+
+from functools import partial  偏函数
+
+def add(a,b,c,d,e,f):
+    return (a+b+c+d+e+f)
+myadd = partial(add,10,20,30,40,50)
+print(myadd(1))
+print(myadd(10))
+
+
+做一个简单窗口程序
+
+import tkinter
+from functools import partial
+
+window = tkinter.Tk()
+lb = tkinter.Label(window, text="Hello world!", font="Arial, 20")
+b1 = tkinter.Button(window, fg='white', bg='blue', text='Button 1')
+#用偏函数固定其他几个参数 生成新的button
+Mybutton=partial(tkinter.Button, window, fg='white',bg='blue')
+b2 = Mybutton(text="Button 2")
+b3=Mybutton(text="Quit",command=window.quit)
+
+lb.pack()           #执行方法,把创建的label真正的安装在window上
+b1.pack()
+b2.pack()
+b3.pack()
+
+window.mainloop()    #窗体方法,用于启动GUI界面程序
+
+
+# 递归函数
+def fact(n):
+    if n == 1:
+        return 1
+
+    return n * fact(n - 1)
+
+
+if __name__ == '__main__':
+    print(fact(5))
+    
+快速排序
+
+def qsort(seq):
+    if len(seq) < 2:
+        return seq
+
+    middle=seq[0]
+    smaller=[]
+    larger=[]
+    for item in seq[1:]:
+        if item <= middle:
+            smaller.append(item)
+        else:
+            larger.append(item)
+
+    return qsort(smaller) + [middle] + qsort(larger)
+
+if __name__ == '__main__':
+    alist = [randint(1,100) for i in range(10)]
+    print(alist)
+    print(qsort(alist))
+    
+生成器是一个带yield语句的函数一个函数或者子程序只返回一次,但一个生成器能暂停执行并返回一个中间的结果
