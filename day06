@@ -141,3 +141,76 @@ def mainMenu():
 
 if __name__ == '__main__':
     mainMenu()
+
+加入错误识别的版本
+def add(x, y):
+    return x + y
+
+def sub(x, y):
+    return x - y
+
+def exam():
+    cmds = {'+': add, '-': sub}           //cmds = {'+': lambda x, y: x + y, '-': lambda x, y: x - y} 匿名函数 可以省略定义add sub
+    nums = [randint(1, 100) for i in range(2)]
+    nums.sort(reverse=True)  # 默认升序，改为降序
+    op = choice('+-')
+    result = cmds[op](*nums)
+    prompt = '%s %s %s = ' % (nums[0], op, nums[1])
+    counter = 0
+
+    while counter < 3:
+        try:
+            answer = int(input(prompt))
+        except:
+            print()
+            continue
+
+        if answer == result:
+            print('Very Good!')
+            break
+        print('Wrong Answer!')
+        counter += 1
+    else:
+        print('%s%s' % (prompt, result))
+
+def main():
+    while True:
+        exam()
+        try:
+            yn = input('Continue(y/n)? ').strip()[0]  # 取出用户输入的第一个非空字符
+        except IndexError:
+            continue
+        except (KeyboardInterrupt, EOFError):
+            yn = 'n'
+        
+        if yn in 'nN':
+            print('\nBye-bye')
+            break
+
+
+if __name__ == '__main__':
+    main()
+
+filter(func, seq):调用一个布尔函数func来迭代遍历每个序列中的元素;返回一个使func返回值为true的元素的序列
+>>>	data	=	filter(lambda	x:	x	%	2,	[num	for	num	in	range(10)])	
+>>>	print(data)									#过滤出10以内的奇数
+[1,	3,	5,	7,	9]	
+
+from random import randint
+
+
+def fun1(num):
+    return num % 2
+
+
+if __name__ == '__main__':
+    alist = [randint(1, 100) for i in range(10)]
+    # for a in alist:
+    result = filter(fun1, alist)  # 返回值1即为True 0是False
+    # print(fun1(a))
+    print(list(result))
+    # filter将它第二个参数中每一项,作为第一个参数(函数)的参数传递
+    # 如果func1的返回值是True就留下来,否则过滤
+
+result2 = filter(lambda num: num % 2, alist)
+print(list(result2))
