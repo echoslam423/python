@@ -1,0 +1,59 @@
+有个程序包含多个函数
+程序运行耗时较长
+为了确定哪个函数是瓶颈,需要计算出每个函数运行时间
+要求使用装饰器实现
+
+import time
+def deco(func):                   #闭包函数
+    def timeit():           
+        start=time.time()
+        func()
+        end=time.time()
+        print(end - start)         #时间戳减法
+    return timeit
+
+@deco                             #装饰器
+def func1():
+    print('func start')
+    time.sleep(3)
+    print('func end')
+
+if __name__ == '__main__':
+    func1()
+    
+模块文件
+一个文件被看作是一个独立模块,一个模块也可以被看作是一个文件
+模块的文件名就是模块的名字加上扩展名.py
+
+名称空间
+就是一个从名称到对象的关系映射集合
+每个模块都定义了它自己的唯一的名称空间
+
+模块导入
+python从sys.path下寻找模块路径
+模块的导入需要一个叫做“路径搜索”的过程
+python在文件系统“预定义区域”中查找要调用的模块
+自动生成自解码文件, 2版本:.pyc  3版本: __pycache__
+>>>	import	sys	
+>>>	print(sys.path)	
+['',	'/usr/local/lib/python36.zip',	'/usr/local/lib/python3.6',	
+'/usr/local/lib/python3.6/lib-dynload',	'/usr/local/lib/python3.6/site-packages']	
+
+希望自己的模块,可以在任意位置使用,可以把模块拷贝到site-packages目录,也可以设置PYTHONPATH环境变量指定搜索路径
+export PYTHONPATH=模块路径目录
+一个模块不管被导入(import)多少次,只会被加载(load)一次
+
+目录可以看作是特殊的模块
+[root@room8pc16 day03]# mkdir mypkg
+[root@room8pc16 day03]# echo 'hi="hello world"' > mypkg/hello.py
+>>> import mypkg.hello
+>>> mypkg.hello.hi
+'hello world'
+>>> from mypkg import hello
+>>> hello.hi
+'hello world'
+####以下报错，不会到mypkg目录查找模块文件####
+>>> import mypkg
+>>> mypkg.hello.hi
+
+
