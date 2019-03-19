@@ -56,4 +56,121 @@ export PYTHONPATH=模块路径目录
 >>> import mypkg
 >>> mypkg.hello.hi
 
+hashlib模块
+>>> import hashlib
+>>> m = hashlib.md5(b'123456')
+>>> m.hexdigest()
+'e10adc3949ba59abbe56e057f20f883e'
+哈希：hash，单向加密，相同的原始数据，总是得到相同的乱码，乱码长度固定。不能通
+过乱码反推出原始数据
+http://www.cmd5.com
 
+>>> m = hashlib.md5()
+>>> m.update(b'123')
+>>> m.update(b'456')
+>>> m.hexdigest()
+'e10adc3949ba59abbe56e057f20f883e'
+
+例子:校验md5  hashlib模块
+
+import hashlib
+import sys
+
+
+def check_md5(fname):
+    m = hashlib.md5()
+    with open(fname, 'rb') as fobj:
+        data = fobj.read(4096)
+
+        while data:
+            m.update(data)
+            data = fobj.read(4096)
+
+    return m.hexdigest()
+
+
+if __name__ == '__main__':
+    print(check_md5(sys.argv[1]))
+
+
+tarfile模块：
+>>> import os
+>>> import shutil
+>>> import tarfile
+>>> os.mkdir('/tmp/mydemo')
+>>> shutil.copytree('/etc/security', '/tmp/mydemo/security')
+>>> os.chdir('/tmp/mydemo')
+>>> tar = tarfile.open('security.tar.gz', 'w:gz')   # 写入, gzip压缩
+>>> tar.add('security')
+>>> tar.add('/etc/hosts')
+>>> tar.close()
+##############################
+>>> shutil.rmtree('security')
+>>> tar = tarfile.open('security.tar.gz', 'r:gz')
+>>> tar.extractall()
+>>> tar.close()
+
+类(Class):用来描述具有相同的属性和方法的对象的集合。它定义了该集合中每个对象所共有的属性和方法。对象是类的实例。
+实例化:创建一个类的实例,类的具体对象。 tidy=BearToy()
+方法:类中定义的函数。
+对象:通过类定义的数据结构实例。对象包括两个数据成员(类变量和实例变量)和方法。
+
+class BearToy:
+    def __init__(self,name,color,size):
+        self.name=name          #绑定在类中的属性在任何地方都可用可见
+        self.color=color
+        self.size=size
+
+    def sing(self,lyrics):
+        #方法自己的参数 变量是局部变量,只有在该方法中可用
+        print('I am %s, %s' % (self.name, lyrics))
+
+
+if __name__ == '__main__':
+    #创建实例时,自动调用__init__方法
+    #实例名bear1会自动作为第一个参数传给self
+    bear1 = BearToy('熊大','Brown','Large')
+    bear2 = BearToy('熊二','white','Middle')
+    print(bear2.name,bear2.color,bear2.size)
+    bear1.sing('德玛西亚')
+    bear2.sing('诺克萨斯')
+    
+组合应用,子类 继承
+class Weapon:          #武器类
+    def __init__(self, name, damage):
+        self.name = name
+        self.damage = damage
+
+
+class role():                                      #角色类 调用武器类
+    def __init__(self, name, weapon_name, weapon_damage):
+        self.name = name
+        self.weapon = Weapon(weapon_name, weapon_damage)
+
+    def speak(self, words):
+        print(words)
+
+    def move(self):
+        print('fly')
+
+
+class Wizard(role):              #男巫 角色类的子类 子类具有父类的方法,子类可以做单独的个性化方法
+    pass                            #父类和子类有同名方法,优先执行子类
+
+
+class Sorceress(role):           #女巫 角色类的子类
+    def __init__(self,name,weapon,clothes):
+      #  Mage.__init__(self,name,weapon) 子类继承父类的方法 推荐使用第二种格式             
+        super(Sorceress,self).__init__(name,weapon)
+        self.clothes=clothes
+
+    def ride(self,zuoqi):                 #子类单独的方法
+        print()
+    
+if __name__ == '__main__':
+    m = role('kaka', 'Ar', 648)
+    m.speak('我是%s' % m.name)
+    print(m.weapon.name, m.weapon.damage)
+    harry = Wizard('哈利波特', '统御',200)
+    herm = Sorceress('赫敏', '蓝歌',200)
+    harry.move()
