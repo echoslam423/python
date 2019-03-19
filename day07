@@ -174,3 +174,50 @@ if __name__ == '__main__':
     harry = Wizard('哈利波特', '统御',200)
     herm = Sorceress('赫敏', '蓝歌',200)
     harry.move()
+
+#一个子类可以拥有多个父类
+#同名函数的查找顺序 自下向上（子类,父类),自做向右(父类1,父类2)
+
+class A:
+    def hello(self):
+        print('A')
+
+    def foo(self):
+        print('A:foo')
+
+
+class B:
+    def greet(self):
+        print('B')
+
+    def foo(self):
+        print('B:foo')
+
+
+class C(A, B):
+    pass
+
+
+if __name__ == '__main__':
+    c1 = C()
+    c1.hello()
+    c1.greet()
+    c1.foo()
+
+
+常用的实例方法
+class Book:
+    def __init__(self, title, author):
+        self.title = title
+        self.author = author
+
+    def __str__(self):
+        return '《%s》' % self.title
+
+    def __call__(self):
+        print('《%s》是%s编写的' % (self.title, self.author))
+
+if __name__ == '__main__':
+    core_py = Book('python核心编程', 'Wesley')  # 调用__init__
+    print(core_py)  # 调用__str__方法
+    core_py()  # 调用__call__方法
