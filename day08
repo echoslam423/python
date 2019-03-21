@@ -1,0 +1,156 @@
+re模块    regular expression
+literal 匹配字符串的值
+
+match函数
+尝试用正则表达式模式从字符串的开头匹配,如果匹配成功,则返回一个匹配对象;否则返回None
+>>>	import	re	
+>>>	m	=	re.match('foo',	'food')											#成功匹配	
+>>>	print(m)	
+<_sre.SRE_Match	object;	span=(0,	3),	match='foo'>	
+>>>		
+>>>	m	=	re.match(‘foo’,	‘seafood’)						#未能匹配	
+>>>	print(m)	
+None	
+
+search函数
+在字符串中查找正则表达式模式的第一次出现,如果匹配成功,则返回一个匹配对象;否则返回None
+>>>	import	re	
+>>>	m	=	re.search('foo',	'food')	
+>>>	print(m)	
+<_sre.SRE_Match	object;	span=(0,	3),	match='foo'>	
+>>>		
+>>>	m	=	re.search(‘foo’,	‘seafood’)						#可以匹配在字符中间的模式	
+>>>	print(m)	
+<_sre.SRE_Match	object;	span=(3,	6),	match='foo'>
+
+groups方法
+https://www.cnblogs.com/austinjoe/p/9492790.html
+>>> m=re.match('(^.)(.*)(.$)',data)
+>>> m.groups()
+('M', 'y phone number is:15088889999', '9')
+
+>>> m=re.match('.*(.$)',data)
+>>> m.groups()
+('9',)
+
+>>> m=re.search('/d+',data)
+>>> m.groups()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'NoneType' object has no attribute 'groups'
+
+>>> m=re.search('My',data)
+>>> m.groups()
+()
+
+group
+使用match或search匹配成功后,返回的匹配对象可以通过group方法获得匹配内容
+>>>	import	re	
+>>>	m	=	re.match('foo',	'food')	
+>>>	print(m.group())	
+foo	
+	
+>>>	m	=	re.search('foo',	'seafood')	
+>>>	m.group()	
+'foo'	
+
+findall函数
+在字符串中查找正则表达式模式的所有(非重复)出现;返回一个匹配对象的列表
+>>>	import	re	
+>>>	m	=	re.search('foo',	'seafood	is	food')	
+>>>	print(m.group())				#search只匹配模式的第一次出现	
+foo	
+>>>		
+>>>	m	=	re.findall(‘foo’,	‘seafood	is	food’)		#获得全部的匹配项	
+>>>	print(m)	
+['foo',	'foo']	
+
+finditer函数
+和findall()函数有相同的功能,但返回的不是列表而是迭代器;对于每个匹配,该迭代器返回一个匹配对象
+>>>	import	re	
+>>>	m	=	re.finditer('foo',	'seafood	is	food')	
+>>>	for	item	in	m:	
+...					print(item.group())	
+...		
+foo	
+foo	
+
+贪婪匹配
+*、+和?都是贪婪匹配操作符,在其后加上?可以取消其贪婪匹配行为
+正则表达式匹配对象通过groups函数获取子组
+>>>	data	=	'My	phone	number	is:	150888899999'	
+>>>	m	=	re.search('.+(\d+)',	data)	
+>>>	print	m.groups()	
+('9',)	
+>>>		
+>>>	m	=	re.search('.+?(\d+)',	data)	
+>>>	m.groups()	
+('150888899999',)	
+
+compile函数
+•  对正则表达式模式进行编译,返回一个正则表达式对
+•  不是必须要用这种方式,但是在大量匹配的情况下,可以提升效率
+>>>	import	re	
+>>>	paV	=	re.compile('foo')	
+>>>	m	=	paV.match('food')	
+>>>	print(m.group())	
+foo	
+
+split方法
+•  根据正则表达式中的分隔符把字符分割为一个列表,并返回成功匹配的列表
+•  字符串也有类似的方法,但是正则表达式更加灵活
+>>>	import	re						#使用 .	和 -	作为字符串的分隔符	
+>>>	mylist	=	re.split('\.|-',	'hello-world.data')	
+>>>	print(mylist)	
+['hello',	'world',	'data']	
+
+sub方法
+•  把字符串中所有匹配正则表达式的地方替换成新的字符串
+>>>	import	re	
+>>>	m	=	re.sub('X',	'Mr.	Smith',	'aVn:	X\nDear	X')	
+>>>	print(m)	
+aVn:	Mr.	Smith	
+Dear	Mr.	Smith
+
+socket 模块
+套接字
+•  套接字是一种具有“通讯端点”概念的计算机网络数据结构
+•  套接字起源于20世纪70年代加利福尼亚大学伯克利分校版本的Unix
+•  一种套接字是Unix套接字,其“家族名”为AF_UNIX
+•  另一种套接字是基于网络的,“家族名”为AF_INET
+•  如果把套接字比做电话的插口,那么主机与端口就像区号与电话号码的一对组合
+
+面向连接与无连接
+无论你使用哪一种地址家族,套接字的类型只有两种。一种是面向连接的套接字,另一种是无连接的套接字
+• 面向连接的主要协议就是传输控制协议TCP,套接字类型为SOCK_STREAM
+•  无连接的主要协议是用户数据报协议UDP,套接字类型为SOCK_DGRAM
+•  python中使用socket模块中的socket函数实现套接字的创建
+
+创建TCP服务器
+•  创建TCP服务器的主要步骤如下:
+1.  创建服务器套接字:s = socket.socket()
+2.  绑定地址到套接字:s.bind()
+3.  启动监听:s.listen()
+4.  接受客户连接:s.accept()
+5.  与客户端通信:recv()/send()
+6.  关闭套接字:s.close()
+
+创建TCP客户端
+•  创建TCP客户端的步骤主要如下:
+1.  创建客户端套接字:cs = socket.socket()
+2.  尝试连接服务器:cs.connect()
+3.  与服务器通信:cs.send()/cs.recv()
+4.  关闭客户端套接字:cs.close()
+
+创建UDP服务器
+•  创建UDP服务器的主要步骤如下:
+1.  创建服务器套接字:s = socket.socket()
+2.  绑定服务器套接字:s.bind()
+3.  接收、发送数据:s.recvfrom()/ss.sendto()
+4.  关闭套接字:s.close()
+
+创建UDP客户端
+•  创建UDP客户端的步骤主要如下:
+1.  创建客户端套接字:cs = socket.socket()
+2.  与服务器通信:cs.sendto()/cs.recvfrom()
+3.  关闭客户端套接字:cs.close()
