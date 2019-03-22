@@ -1,0 +1,165 @@
+import os
+
+print('starting...')
+retval = os.fork()  # os.fork对于父进程返回值是非0值;子进程返回值是0
+#后续代码在父子进程中都会执行
+if retval:
+    print('hello from parent!')
+else:
+    print('hello from child')
+
+print('hello world!')
+
+fork编程思路
+1,父子进程的分工
+2,父进程只负责生成子进程
+3,子进程只负责做具体工作,做完退出
+
+Ping同一网段下的机器
+import os
+import subprocess
+
+def ping(host):
+    result = subprocess.run('ping -c2 %s &> /dev/null' % host, shell=True)
+    if result.returncode == 0:
+        print('%s: up' % host)
+    else:
+        print('%s: down' % host)
+
+if __name__ == '__main__':
+    ips = ['172.40.63.%s' % i for i in range(1,255)]
+    for ip in ips:
+        ret_val = os.fork()
+        if not ret_val:
+            ping(ip)          #子进程执行ping
+            exit()
+
+父进程回收僵尸进程
+import os
+import time
+
+print('start...')
+retval = os.fork()
+if retval:
+    print('父进程')
+    result = os.waitpid(-1, 0)  # -1表示与wait函数相同，0表示挂起父进程
+    print(result) # 直到僵尸进程被处理才会向下执行，result值是(僵尸进程ID，状态值)
+    time.sleep(10)
+    print('父进程，结束')
+else:
+    print('子进程')
+    time.sleep(20)
+    print('子进程，结束')
+    exit()
+
+import os
+import time
+
+print('start...')
+retval = os.fork()
+if retval :
+    print('父进程')
+    time.sleep(5)
+    result=os.waitpid(-1,1)
+    print(result)
+    time.sleep(15)
+    print('父进程,结束')
+else:
+    print('子进程')
+    time.sleep(10)
+    print('子进程,结束')
+    exit()
+
+
+客户机,服务器tcp通讯
+
+import socket
+import os
+from time import strftime
+
+
+class TcpTimeServer:
+    def __init__(self, host='', port=12345):
+        self.addr = (host, port)
+        self.serv = socket.socket()
+        self.serv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.serv.bind(self.addr)
+        self.serv.listen(1)
+
+    def chat(self, cli_sock):
+        while True:
+            data = cli_sock.recv(1024)
+            if data.strip() == b'quit':
+                break
+            data = data.decode()
+            data = '[%s] %s' % (strftime('%X'), data)
+            cli_sock.send(data.encode())
+
+        cli_sock.close()
+
+    def run(self):
+        while True:
+            try:
+                cli_sock,cli_addr=self.serv.accept()
+            except KeyboardInterrupt:
+                break
+            retval = os.fork()
+            #fork后,父子进程中都有服务器套接字和客户端套接字
+            if not retval:
+                self.serv.close()  # 子进程不需要服务器套接字
+                self.chat(cli_sock)
+                exit()
+            
+            cli_sock.close() #父进程不予客户机通讯,关闭客户机套接字
+            
+            while 1:
+                result = os.waitpid(-1,1)[0]   #0子进程pid
+                if result == 0:  #如果不是僵尸进程则中断
+                    break
+              
+
+if __name__ == '__main__':
+        tcpserv = TcpTimeServer()
+        tcpserv.run()
+        
+线程
+import subprocess
+import threading
+
+def ping(host):
+    result = subprocess.run('ping -c2 %s &> /dev/null' % host, shell=True)
+    if result.returncode == 0:
+        print('%s: up' % host)
+    else:
+        print('%s: down' % host)
+
+if __name__ == '__main__':
+    ips = ['172.40.63.%s' % i for i in range(1, 255)]
+    for ip in ips:
+        # ping(ip)
+        # 创建工作线程
+        t = threading.Thread(target=ping, args=(ip,))
+        t.start()  # target(ip) => ping(ip)
+
+
+用调用类的方法实现
+
+import subprocess
+import threading
+
+class Ping:
+    def __init__(self,host):
+        self.h = host
+        
+    def __call__(self):
+        result = subprocess.run('ping -c2 %s &> /dev/null' % self.h,shell=True)
+        if result.returncode == 0 :
+            print('%s up' % self.h)
+        else:
+            print('%s down' % self.h)
+
+if __name__ == '__main__':
+    ips = ['172.40.63.%s' % i for i in range(255)]
+    for ip in ips:
+        t= threading.Thread(target=Ping(ip))
+        t.start()  #target()
