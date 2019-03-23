@@ -163,7 +163,7 @@ delete1 = 'DELETE FROM department WHERE dep_id=%s'
 cursor.execute(delete1, (6,))
 
 sqlalchemy
-
+ORM 对象关系映射
 安装
 [root@localhost	packages]#	pip3 install sqlalchemy
 
@@ -203,7 +203,7 @@ class Employees(Base):
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
     
-Session 创建信息
+Session 创建信息 如同insert 
 from sql_alcemy import Departments, Employees, Session
 
 session = Session()
@@ -258,3 +258,51 @@ nmb = Employees(
 session.add_all([dzh, zc, fxq, mca, rwj])
 session.commit()
 session.close()
+
+查询
+qset = session.query(Departments)
+print(qset1) #此时qset1只是一条sql语句,向qset1取值时,才是真正查询数据库
+print(qset1.all()) #返回departments表中所有记录组成得对象集合
+for dep in qset1:
+    print('%s : %s' % (dep.dep_id,dep.dep_name))
+
+查询排序
+
+qset2 = session.query(Departments).order_by(Departments.dep_id)
+print(qset2)
+for dep in qset2:
+    print('%s : %s' % (dep.dep_id, dep.dep_name))
+    
+查询带条件,返回元组，部返回实例
+qset3 = session.query(Employees.emp_name, Employees.email)
+print(qset3)
+for item in qset3:
+    print(item)
+for name, email in qset3:
+    print('%s:%s' % (name, email))
+    
+qset4 = session.query(Departments.dep_name.label('部门'))
+for dep in qset4:
+    print(dep.部门)
+    
+qset5 = session.query(Departments).order_by(department.dep_id)[2:4]
+for dep in qset5:
+    print ('%s : %s ' %(dep.dep_id, dep.dep_name))
+
+qset6 = session.query(Departments).filter(department.dep_id == 1)
+print(qset6)
+for dep in qset6:
+    print('%s: %s' % (dep.dep_id, dep.dep_name))
+
+# qset7 = session.query(Departments).filter(Departments.dep_name.in_(['人事部', '开发部']))
+# for dep in qset7:
+#     print('%s: %s' % (dep.dep_id, dep.dep_name))
+# qset8 = session.query(Departments).filter(~Departments.dep_name.in_(['人事部', '开发部']))
+# print('*' * 30)
+# for dep in qset8:
+#     print('%s: %s' % (dep.dep_id, dep.dep_name))
+#############################################
+from sqlalchemy import and_
+qset9 = session.query(Departments).filter(and_(Departments.dep_id>=2, Departments.dep_id<=4))
+for dep in qset9:
+    print('%s: %s' % (dep.dep_id, dep.dep_name))
