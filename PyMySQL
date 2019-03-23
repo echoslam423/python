@@ -49,7 +49,7 @@ conn = pymysql.connect(
     db='nsd1810',
     charset='utf8'
 )
-cursor = conn.cursor()
+cursor = conn.cursor()    #cursor 光标
 
 create_dep = '''create table department(
 dep_id INT , dep_name VARCHAR (20) NOT NULL UNIQUE ,
@@ -72,3 +72,189 @@ cursor.execute(create_sal)
 
 cursor.close()
 conn.close()
+
+插入操作
+import pymysql
+
+conn = pymysql.connect(
+    host='127.0.0.1',
+    port=3306,
+    user='root',
+    passwd='tedu.cn',
+    db='nsd1810',
+    charset='utf8'
+)
+cursor = conn.cursor()
+insert1 = 'insert into department VALUE (%s,%s)'
+cursor.execute(insert1,(1,'人事部'))
+cursor.executemany(insert1,[(2,'运维部')])
+cursor.executemany(insert1,[(3,'开发部'),(4,'行政部')])
+
+conn.commit()
+cursor.close()
+conn.close()
+
+查询操作
+import pymysql
+
+conn = pymysql.connect(
+    host='127.0.0.1',
+    port=3306,
+    user='root',
+    passwd='tedu.cn',
+    db='nsd1810',
+    charset='utf8'
+)
+cursor = conn.cursor()
+select1 = 'select * from department ORDER BY dep_id'
+cursor.execute(select1)
+
+result = cursor.fetchone()    #如输出所示 cursor.fetchone()是指针型
+print(result)
+print('*' * 30)
+result2 = cursor.fetchmany(2)   #fetch 取
+print(result2)
+print('*' * 30)
+result3 = cursor.fetchall()
+print(result3)
+
+conn.commit()
+cursor.close()
+conn.close()
+
+输出
+(1, '人事部')
+******************************
+((2, '运维部'), (3, '开发部'))
+******************************
+((4, '行政部'),)
+import pymysql
+
+conn = pymysql.connect(
+    host='127.0.0.1',
+    port=3306,
+    user='root',
+    passwd='tedu.cn',
+    db='nsd1810',
+    charset='utf8'
+)
+cursor = conn.cursor()
+select2 = 'SELECT * FROM department order by dep_id'
+cursor.execute(select2)
+cursor.scroll(4)   # 默认以相对方式，从当前位置向下移动
+result = cursor.fetchone()
+print(result)
+print('*' * 30)
+cursor.scroll(0, mode='absolute')  # absolute一定是从开头移动
+result2 = cursor.fetchone()
+print(result2)
+conn.commit()
+cursor.close()
+conn.close()
+输出 
+(4, '行政部')
+##############################
+(1, '人事部')
+
+# update1 = 'UPDATE department SET dep_name=%s WHERE dep_name=%s'
+# cursor.execute(update1, ('人力资源部', '人事部'))
+
+delete1 = 'DELETE FROM department WHERE dep_id=%s'
+cursor.execute(delete1, (6,))
+
+sqlalchemy
+
+安装
+[root@localhost	packages]#	pip3 install sqlalchemy
+
+python 创建sql引擎
+from sqlalchemy import create_engine, Column, Integer, String, Date, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base    #声明系统,定义基类 
+from sqlalchemy.orm import sessionmaker    #创建会话类
+
+engine = create_engine(
+    # 用户名:密码@服务器/数据库?参数
+    'mysql+pymysql://root:tedu.cn@127.0.0.1/tedu1810?charset=utf8',
+    encoding='utf8',
+    echo=True  # 在屏幕终端输出详细日志，生产环境不要设置
+)
+Base = declarative_base()     #定义基类
+Session = sessionmaker(bind=engine)   #ORM访问数据库的句柄被称作Session
+
+class Departments(Base):
+    __tablename__ = 'departments'
+    dep_id = Column(Integer, primary_key=True)
+    dep_name = Column(String(20), unique=True, nullable=False)
+
+    def __str__(self):
+        return '%s : %s' % (self.dep_id, self.dep_name)
+
+class Employees(Base):
+    __tablename__ = 'employees'
+    emp_id = Column(Integer, primary_key=True)
+    emp_name = Column(String(20))
+    birth_date = Column(Date)
+    email = Column(String(50))
+    dep_id = Column(Integer, ForeignKey('departments.dep_id'))
+
+    def __str__(self):
+        return self.emp_name
+
+if __name__ == '__main__':
+    Base.metadata.create_all(engine)
+    
+Session 创建信息
+from sql_alcemy import Departments, Employees, Session
+
+session = Session()
+hr = Departments(dep_id=1, dep_name='人事部')
+session.add(hr)
+dev = Departments(dep_id=2, dep_name='开发部')
+ops = Departments(dep_id=3, dep_name='运维部')
+market = Departments(dep_id=4, dep_name='市场部')
+finance = Departments(dep_id=5, dep_name='财务部')
+session.add_all([dev, ops, market, finance])
+
+dzh = Employees(
+    emp_id=1,
+    emp_name='董志华',
+    birth_date='1993-4-15',
+    email='dzh@qq.com',
+    dep_id=2
+)
+
+zk = Employees(
+    emp_id=2,
+    emp_name='猪昆',
+    birth_date='1992-2-10',
+    email='zk@qq.com',
+    dep_id=5
+)
+
+eb = Employees(
+    emp_id=3,
+    emp_name='二B',
+    birth_date='1998-11-11',
+    email='erb@qq.com',
+    dep_id=3
+)
+
+mlb = Employees(
+    emp_id=4,
+    emp_name='孟乐博',
+    birth_date='1990-8-31',
+    email='mlb@qq.com',
+    dep_id=1
+)
+
+nmb = Employees(
+    emp_id=5,
+    emp_name='牛莫夯',
+    birth_date='1983-7-9',
+    email='nmb@qq.com',
+    dep_id=4
+)
+
+session.add_all([dzh, zc, fxq, mca, rwj])
+session.commit()
+session.close()
