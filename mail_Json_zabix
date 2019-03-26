@@ -54,3 +54,209 @@ type后面填写的是快递公司，postid是快递单号
 >>> info.reverse()  # 最早的信息是最后一项，反转一下
 >>> for info_dict in info:   # 列表中的每一项是字典，逐一取出每个字典
 ...     print('%(time)s: %(context)s' % info_dict)
+
+#################################################################################
+requests:更高层次的http客户端库
+1、安装
+# cd requests_pkgs/
+[root@room8pc16 requests_pkgs]# pip3 install *
+2、应用
+>>> import requests
+(1) 获取文本内容
+>>> r = requests.get('http://www.163.com/')
+>>> r.text
+(2) 获取非文本内容(如图片、mp3等)
+>>> r = requests.get('https://www.cnblogs.com/images/cnblogs_com/jxxclj/1245877/o_pri1%20(1).png')
+>>> with open('/tmp/kd.png', 'wb') as fobj:
+...     fobj.write(r.content)
+(3) 获取json格式文本
+>>> r = requests.get('http://www.weather.com.cn/data/cityinfo/101010100.html')
+>>> r.json()    # 出现乱码
+>>> r.encoding  # 查看当前的字符编码
+'ISO-8859-1'
+>>> r.encoding = 'utf8'   # 修改字符编码
+>>> r.json()    # 可以正常显示汉字
+(4)传参
+>>> kd_url = 'http://www.kuaidi100.com/query'
+>>> kd_params = {'type': 'youzhengguonei', 'postid': '9893442769997'}
+>>> r = requests.get(kd_url, params=kd_params)
+>>> r.json()
+#################################################################################
+import requests
+import json
+import getpass
+
+def send_msg(url):
+    headers = {'Content-Type': 'application/json;charset=utf-8'}
+    data = {
+        "actionCard": {
+            "title": "乔布斯 20 年前想打造一间苹果咖啡厅，而它正是 Apple Store 的前身",
+            "text": "![screenshot](@lADOpwk3K80C0M0FoA) \n #### 乔布斯 20 年前想打造的苹果咖啡厅 \n\n Apple Store 的设计正从原来满满的科技感走向生活化，而其生活化的走向其实可以追溯到 20 年前苹果一个建立咖啡馆的计划",
+            "hideAvatar": "0",
+            "btnOrientation": "0",
+            "singleTitle" : "阅读全文",
+            "singleURL" : "https://www.dingtalk.com/"
+        },
+        "msgtype": "actionCard"
+    }
+    r = requests.post(url, headers=headers, data=json.dumps(data))
+    return r.json()
+
+if __name__ == '__main__':
+    url = getpass.getpass()  # 你机器人的token地址
+    result = send_msg(url)
+    print(result)
+
+#################################################################################
+
+import requests
+import json
+import getpass
+
+def send_msg(url):
+    headers = {'Content-Type': 'application/json;charset=utf-8'}
+    data = {
+        "msgtype": "markdown",
+        "markdown": {"title":"杭州天气",
+            "text":"## 杭州天气  \n > 9度，@1825718XXXX **西北风1级**，空气良89，相对温度73%\n\n > ![screenshot](http://i01.lw.aliimg.com/media/lALPBbCc1ZhJGIvNAkzNBLA_1200_588.png)\n  > ###### 10点20分发布 [天气]( https://www.seniverse.com) "
+        },
+        "at": {
+            "atMobiles": [
+                "1825718XXXX"
+            ],
+            "isAtAll": False
+        }
+    }
+    r = requests.post(url, headers=headers, data=json.dumps(data))
+    return r.json()
+
+if __name__ == '__main__':
+    url = getpass.getpass()  # 你机器人的token地址
+    result = send_msg(url)
+    print(result)
+
+##################################################################################
+
+import requests
+import json
+
+url = 'http://192.168.4.2/zabbix/api_jsonrpc.php'
+headers = {'Content-Type': 'application/json-rpc'}
+###
+data = {
+    "jsonrpc": "2.0",  # 协议版本，固定的
+    "method": "apiinfo.version",  # 方法，做什么就找到什么方法
+    "params": [],   # 参数
+    "id": 101   # 随便给定一个数值，表示任务ID
+}
+
+###
+# 获得令牌
+# data = {
+#     "jsonrpc": "2.0",
+#     "method": "user.login",
+#     "params": {
+#         "user": "Admin",
+#         "password": "zabbix"
+#     },
+#     "id": 1
+# }
+# df99a7ab5f64c27fd4bc155c44b452fd
+###
+# 获取主机信息
+# data = {
+#     "jsonrpc": "2.0",
+#     "method": "host.get",
+#     "params": {
+#         "filter": {
+#             # "host": [
+#             #     "Zabbix server",
+#             #     "Linux server"
+#             # ]
+#         }
+#     },
+#     "auth": "df99a7ab5f64c27fd4bc155c44b452fd",
+#     "id": 1
+# }
+###
+# 获取模板信息
+# data = {
+#     "jsonrpc": "2.0",
+#     "method": "template.get",
+#     "params": {
+#         "output": "extend",
+#         "filter": {
+#             "host": [
+#                 "Template OS Linux",
+#             ]
+#         }
+#     },
+#     "auth": "df99a7ab5f64c27fd4bc155c44b452fd",
+#     "id": 1
+# }
+# 模板ID: 10001
+###
+# 获取组信息
+# data = {
+#     "jsonrpc": "2.0",
+#     "method": "hostgroup.get",
+#     "params": {
+#         "output": "extend",
+#         "filter": {
+#             "name": [
+#                 "Linux servers"
+#             ]
+#         }
+#     },
+#     "auth": "df99a7ab5f64c27fd4bc155c44b452fd",
+#     "id": 1
+# }
+# 组ID：2
+##
+# 创建名为web1的主机，把它加入到Linux Servers组中，使用template os linux模板
+data = {
+    "jsonrpc": "2.0",
+    "method": "host.create",
+    "params": {
+        "host": "web1",
+        "interfaces": [   # 指定使用什么方式临控主机
+            {
+                "type": 1,
+                "main": 1,
+                "useip": 1,
+                "ip": "192.168.4.2",
+                "dns": "",
+                "port": "10050"
+            }
+        ],
+        "groups": [
+            {
+                "groupid": "2"
+            }
+        ],
+        "templates": [
+            {
+                "templateid": "10001"
+            }
+        ],
+        "inventory_mode": 0,
+        "inventory": {
+            "macaddress_a": "01234",
+            "macaddress_b": "56768"
+        }
+    },
+    "auth": "df99a7ab5f64c27fd4bc155c44b452fd",
+    "id": 1
+}
+
+
+
+##
+r = requests.post(url, headers=headers, data=json.dumps(data))
+print(r.json())
+
+
+##
+r = requests.post(url, headers=headers, data=json.dumps(data))
+print(r.json())
+
