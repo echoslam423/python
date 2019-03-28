@@ -311,3 +311,43 @@ if __name__ == '__main__':
     sources = ['myansible/hosts']
     playbook = ['myansible/lamp.yml']
     run_pb(sources, playbook)
+
+
+
+download.py
+#!/usr/bin/env python
+
+import wget
+from ansible.module_utils.basic import AnsibleModule
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            url=dict(required=True, type='str'),
+            path=dict(required=True, type='str')
+        )
+    )
+    wget.download(module.params['url'], module.params['path'])
+    module.exit_json(changed=True)
+
+if __name__ == '__main__':
+    main()
+
+remote_cp
+#!/usr/bin/env python
+
+import shutil
+from ansible.module_utils.basic import AnsibleModule
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            yuan=dict(required=True, type='str'),
+            mubiao=dict(required=True, type='str')
+        )
+    )
+    shutil.copy(module.params['yuan'], module.params['mubiao'])
+    module.exit_json(changed=True)
+
+if __name__ == '__main__':
+    main()
