@@ -1,0 +1,114 @@
+准备环境：
+1、在物理主机上安装ansible
+[root@room8pc16 zzg_pypkgs]# cd ansible_pkg/
+# pip3 install *
+或
+# pip3 install ansible
+2、准备三台虚拟机
+node4.tedu.cn  192.168.4.4
+node5.tedu.cn  192.168.4.5
+node6.tedu.cn  192.168.4.6
+三台虚拟机只需要配置IP地址和主机名即可
+
+3、创建ansible工作目录
+[root@room8pc16 day06]# mkdir myansible
+[root@room8pc16 day06]# cd myansible
+[root@room8pc16 myansible]# vim ansible.cfg
+[defaults]
+inventory = hosts
+remote_user = root
+[root@room8pc16 myansible]# vim hosts
+[dbservers]
+node4.tedu.cn
+
+[webservers]
+node5.tedu.cn
+node6.tedu.cn
+
+4、配置名称解析
+[root@room8pc16 myansible]# for i in {1..254}
+> do
+> echo -e "192.168.4.$i\tnode$i.tedu.cn\tnode$i" >> /etc/hosts
+> done
+
+5、收集远程主机密钥                 //vim /etc/ssh/ssh_config   StrictHostKeyChecking=no
+[root@room8pc16 ~]# ssh-keyscan node{4..6} node{4..6}.tedu.cn 192.168.4.{4..6} >> .ssh/known_hosts
+
+6、执行ad-hoc临时命令
+[root@room8pc16 myansible]# ansible all -m ping -k
+[root@room8pc16 myansible]# ansible all -m shell -a "id root; id zhangsan" -k
+
+7、修改vim的配置：如果是yaml文件，按tab键是两个空格、支持自动缩进、将tab转换为空格
+[root@room8pc16 ~]# vim ~/.vimrc
+autocmd FileType yaml setlocal sw=2 ts=2 et ai
+
+8、通过playbook完成密钥分发
+[root@room8pc16 ~]# ansible-doc authorized_key
+[root@room8pc16 myansible]# vim auth.yml
+---
+- name: auth key
+  hosts: all
+  tasks:
+    - name: upload pub key
+      authorized_key:
+        user: root
+        state: present
+        key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+# 检查语法
+[root@room8pc16 myansible]# ansible-playbook --syntax-check auth.yml
+# 执行
+[root@room8pc16 myansible]# ansible-playbook auth.yml -k
+# 测试，执行ansible任务，不再需要输入密码
+[root@room8pc16 myansible]# ansible all -m ping
+
+9、集中部署yum
+[root@room8pc16 myansible]# mkdir files
+[root@room8pc16 myansible]# vim files/centos.repo
+[centos]
+name=centos
+baseurl=ftp://192.168.4.254/centos7.4
+gpgcheck=0
+[root@room8pc16 myansible]# vim yum.yml
+---
+- name: upload yum repo file
+  hosts: all
+  tasks:
+    - name: upload centos.repo
+      copy:
+        src: files/centos.repo
+        dest: /etc/yum.repos.d/centos.repo
+[root@room8pc16 myansible]# ansible-playbook --syntax-check yum.yml
+[root@room8pc16 myansible]# ansible-playbook yum.yml
+[root@room8pc16 myansible]# ansible all -m shell -a "yum repolist"
+
+
+10、部署LAMP环境
+[root@room8pc16 myansible]# vim lamp.yml
+---
+- name: config dbservers
+  hosts: dbservers
+  tasks:
+    - name: install dbservers pkgs
+      yum:
+        name: mariadb-server
+        state: present
+    - name: config dbservers services
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+- name: config webservers
+  hosts: webservers
+  tasks:
+    - name: install webservers pkgs
+      yum:
+        name: [httpd, php, php-mysql]
+        state: latest
+    - name: config webservers services
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+[root@room8pc16 myansible]# ansible-playbook --syntax-check lamp.yml
+[root@room8pc16 myansible]# ansible-playbook lamp.yml
