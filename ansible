@@ -351,3 +351,12 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+ansible-cmdb
+[root@room8pc16 zzg_pypkgs]# cd ansible-cmdb_pkgs/
+[root@room8pc16 ansible-cmdb_pkgs]# pip3 install *
+[root@room8pc16 myansible]# ansible all -m setup --tree /tmp/out
+[root@room8pc16 myansible]# vim /usr/local/bin/ansible-cmdb
+改第8行：PY_BIN=$(which python3)
+[root@room8pc16 myansible]# ansible-cmdb /tmp/out/ > /tmp/info.html
+[root@room8pc16 myansible]# firefox /tmp/info.html
